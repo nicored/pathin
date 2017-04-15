@@ -18,13 +18,13 @@ type (
 //     clientGroup := r.AddDestGroup("client-bucket", clientHandler)
 //     clientGroup.AddDest("pictures", picturesHandler)
 type Root interface {
-	destGroup
+	DestGroup
 	GetPath(string, interface{}) (string, error)
 }
 type root struct {
 	name         string
 	typeHandlers typeHandlers
-	mainGroup    *group
+	mainGroup    DestGroup
 }
 
 func New(name string) Root {
@@ -33,7 +33,7 @@ func New(name string) Root {
 		typeHandlers: typeHandlers{},
 	}
 
-	newRoot.mainGroup = &group{
+	newRoot.mainGroup = &Group{
 		root:     newRoot,
 		name:     name,
 		handlers: []handlerFunc{},
@@ -114,8 +114,8 @@ func (r root) Name() string {
 	return string(r.name)
 }
 
-func (r *root) AddDestGroup(name string, destHandlerChain ...handlerFunc) *group {
-	return &group{
+func (r *root) AddDestGroup(name string, destHandlerChain ...handlerFunc) DestGroup {
+	return &Group{
 		name:        name,
 		parentGroup: r.mainGroup,
 		root:        r,
@@ -132,10 +132,10 @@ func (r *root) AddDest(name string, destHandlerChain ...handlerFunc) {
 }
 
 func (r *root) Handlers() []handlerFunc {
-	return r.mainGroup.handlers
+	return r.mainGroup.Handlers()
 }
 
-func (r *root) ParentGroup() destGroup {
+func (r *root) ParentGroup() DestGroup {
 	return nil
 }
 
