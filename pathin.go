@@ -17,18 +17,18 @@ type (
 //     r.AddDest("public", pathin.RawHandler)
 //     clientGroup := r.AddDestGroup("client-bucket", clientHandler)
 //     clientGroup.AddDest("pictures", picturesHandler)
-type Root interface {
+type DestRoot interface {
 	DestGroup
 	GetPath(string, interface{}) (string, error)
 }
-type root struct {
+type Root struct {
 	name         string
 	typeHandlers typeHandlers
 	mainGroup    DestGroup
 }
 
-func New(name string) Root {
-	newRoot := &root{
+func New(name string) *Root {
+	newRoot := &Root{
 		name:         name,
 		typeHandlers: typeHandlers{},
 	}
@@ -42,7 +42,7 @@ func New(name string) Root {
 	return newRoot
 }
 
-func (r root) GetPath(targetName string, values interface{}) (string, error) {
+func (r Root) GetPath(targetName string, values interface{}) (string, error) {
 	if handlers, ok := r.typeHandlers[targetName]; ok {
 		pathChan, eChan := traverseHandlers(handlers, values)
 		defer close(pathChan)
@@ -110,11 +110,11 @@ func runHandlers(dest destTarget, values interface{}) (string, error) {
 	return path, nil
 }
 
-func (r root) Name() string {
+func (r Root) Name() string {
 	return string(r.name)
 }
 
-func (r *root) AddDestGroup(name string, destHandlerChain ...handlerFunc) DestGroup {
+func (r *Root) AddDestGroup(name string, destHandlerChain ...handlerFunc) DestGroup {
 	return &Group{
 		name:        name,
 		parentGroup: r.mainGroup,
@@ -123,7 +123,7 @@ func (r *root) AddDestGroup(name string, destHandlerChain ...handlerFunc) DestGr
 	}
 }
 
-func (r *root) AddDest(name string, destHandlerChain ...handlerFunc) {
+func (r *Root) AddDest(name string, destHandlerChain ...handlerFunc) {
 	r.typeHandlers[name] = &target{
 		name:        name,
 		parentGroup: r.mainGroup,
@@ -131,14 +131,14 @@ func (r *root) AddDest(name string, destHandlerChain ...handlerFunc) {
 	}
 }
 
-func (r *root) Handlers() []handlerFunc {
+func (r *Root) Handlers() []handlerFunc {
 	return r.mainGroup.Handlers()
 }
 
-func (r *root) ParentGroup() DestGroup {
+func (r *Root) ParentGroup() DestGroup {
 	return nil
 }
 
-func (r *root) Root() *root {
+func (r *Root) Root() *Root {
 	return r
 }

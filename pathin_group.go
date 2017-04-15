@@ -2,13 +2,13 @@ package pathin
 
 type DestGroup interface {
 	destTarget
-	Root() *root
+	Root() *Root
 	AddDestGroup(string, ...handlerFunc) DestGroup
 	AddDest(string, ...handlerFunc)
 }
 
 type Group struct {
-	root        *root
+	root        *Root
 	name        string
 	parentGroup DestGroup
 	handlers    []handlerFunc
@@ -35,7 +35,7 @@ func (g *Group) AddDestGroup(name string, handlersChain ...handlerFunc) DestGrou
 	}
 }
 
-func (g Group) Root() *root {
+func (g Group) Root() *Root {
 	return g.root
 }
 
