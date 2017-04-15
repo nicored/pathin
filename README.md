@@ -12,7 +12,7 @@ In your cloud storage, you probably have client data, that you only want to
 store in their client bucket/directory, but this directory can also contain
 multiple sub-directories, and so on. So you could end up with paths like these:
 
-```
+```go
     /my-product-bucket/clients/974/templates/999/images/thumbs/20170416/super_thumb.png
     /my-product-bucket/clients/974/profile/pictures/super_pic_997.png
     /my-product-bucket/public/public_file.pdf
@@ -20,7 +20,7 @@ multiple sub-directories, and so on. So you could end up with paths like these:
 
 Using Pathin, you could group rules, and create your target destination:
 
-```
+```go
     pg := pathin.New("my-product-bucket")
     pg.AddDest("public", pathin.RawHandler) // RawHandler uses the destination or group name
 
