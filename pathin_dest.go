@@ -3,20 +3,20 @@ package pathin
 type destTarget interface {
 	Name() string
 	ParentGroup() DestGroup
-	Handlers() []handlerFunc
+	Handlers() []HandlerFunc
 }
 
 type target struct {
 	name        string
 	parentGroup DestGroup
-	handlers    []handlerFunc
+	handlers    []HandlerFunc
 }
 
 func (t target) Name() string {
 	return t.name
 }
 
-func (t target) Handlers() []handlerFunc {
+func (t target) Handlers() []HandlerFunc {
 	return t.handlers
 }
 

@@ -7,7 +7,7 @@ import (
 )
 
 type (
-	handlerFunc  func(handlerName string, values interface{}) (string, error)
+	HandlerFunc  func(handlerName string, values interface{}) (string, error)
 	typeHandlers map[string]destTarget
 )
 
@@ -36,7 +36,7 @@ func New(name string) *Root {
 	newRoot.mainGroup = &Group{
 		root:     newRoot,
 		name:     name,
-		handlers: []handlerFunc{},
+		handlers: []HandlerFunc{},
 	}
 
 	return newRoot
@@ -114,7 +114,7 @@ func (r Root) Name() string {
 	return string(r.name)
 }
 
-func (r *Root) AddDestGroup(name string, destHandlerChain ...handlerFunc) DestGroup {
+func (r *Root) AddDestGroup(name string, destHandlerChain ...HandlerFunc) DestGroup {
 	return &Group{
 		name:        name,
 		parentGroup: r.mainGroup,
@@ -123,7 +123,7 @@ func (r *Root) AddDestGroup(name string, destHandlerChain ...handlerFunc) DestGr
 	}
 }
 
-func (r *Root) AddDest(name string, destHandlerChain ...handlerFunc) {
+func (r *Root) AddDest(name string, destHandlerChain ...HandlerFunc) {
 	r.typeHandlers[name] = &target{
 		name:        name,
 		parentGroup: r.mainGroup,
@@ -131,7 +131,7 @@ func (r *Root) AddDest(name string, destHandlerChain ...handlerFunc) {
 	}
 }
 
-func (r *Root) Handlers() []handlerFunc {
+func (r *Root) Handlers() []HandlerFunc {
 	return r.mainGroup.Handlers()
 }
 
