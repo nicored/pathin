@@ -21,5 +21,5 @@ func (t target) Handlers() []handlerFunc {
 }
 
 func (t target) ParentGroup() destGroup {
-	return destGroup(t.parentGroup)
+	return t.parentGroup
 }

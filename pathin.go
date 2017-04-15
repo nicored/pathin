@@ -11,9 +11,15 @@ type (
 	typeHandlers map[string]destTarget
 )
 
+// Root holds the very top group, from which you can build your rules.
+// For example
+//     r := pathin.New("my-bucket-name")
+//     r.AddDest("public", pathin.RawHandler)
+//     clientGroup := r.AddDestGroup("client-bucket", clientHandler)
+//     clientGroup.AddDest("pictures", picturesHandler)
 type Root interface {
 	destGroup
-	GetPath() (string, error)
+	GetPath(string, interface{}) (string, error)
 }
 type root struct {
 	name         string
@@ -21,7 +27,7 @@ type root struct {
 	mainGroup    *group
 }
 
-func New(name string) *root {
+func New(name string) Root {
 	newRoot := &root{
 		name:         name,
 		typeHandlers: typeHandlers{},
@@ -123,4 +129,16 @@ func (r *root) AddDest(name string, destHandlerChain ...handlerFunc) {
 		parentGroup: r.mainGroup,
 		handlers:    destHandlerChain,
 	}
+}
+
+func (r *root) Handlers() []handlerFunc {
+	return r.mainGroup.handlers
+}
+
+func (r *root) ParentGroup() destGroup {
+	return nil
+}
+
+func (r *root) Root() *root {
+	return r
 }
