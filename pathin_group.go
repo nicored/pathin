@@ -1,33 +1,33 @@
 package pathin
 
-type destGroup interface {
+type DestGroup interface {
 	destTarget
 	Root() *root
-	AddDestGroup(string, ...handlerFunc) *group
+	AddDestGroup(string, ...handlerFunc) DestGroup
 	AddDest(string, ...handlerFunc)
 }
 
-type group struct {
+type Group struct {
 	root        *root
 	name        string
-	parentGroup destGroup
+	parentGroup DestGroup
 	handlers    []handlerFunc
 }
 
-func (g group) Name() string {
+func (g Group) Name() string {
 	return g.name
 }
 
-func (g group) ParentGroup() destGroup {
+func (g Group) ParentGroup() DestGroup {
 	return g.parentGroup
 }
 
-func (g group) Handlers() []handlerFunc {
+func (g Group) Handlers() []handlerFunc {
 	return g.handlers
 }
 
-func (g *group) AddDestGroup(name string, handlersChain ...handlerFunc) *group {
-	return &group{
+func (g *Group) AddDestGroup(name string, handlersChain ...handlerFunc) DestGroup {
+	return &Group{
 		name:        name,
 		root:        g.root,
 		parentGroup: g,
@@ -35,10 +35,11 @@ func (g *group) AddDestGroup(name string, handlersChain ...handlerFunc) *group {
 	}
 }
 
-func (g group) Root() *root {
+func (g Group) Root() *root {
 	return g.root
 }
-func (g *group) AddDest(name string, handlersChain ...handlerFunc) {
+
+func (g *Group) AddDest(name string, handlersChain ...handlerFunc) {
 	if g.root == nil {
 		panic("Whoops")
 	}
