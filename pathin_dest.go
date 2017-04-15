@@ -1,18 +1,18 @@
 package pathin
 
 type destTarget interface {
-	Name() handlerName
+	Name() string
 	ParentGroup() destGroup
 	Handlers() []handlerFunc
 }
 
 type target struct {
-	name        handlerName
+	name        string
 	parentGroup *group
 	handlers    []handlerFunc
 }
 
-func (t target) Name() handlerName {
+func (t target) Name() string {
 	return t.name
 }
 
