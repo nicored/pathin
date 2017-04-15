@@ -7,10 +7,8 @@ import (
 )
 
 type (
-	rootName     string
-	handlerName  string
 	handlerFunc  func(handlerName string, values interface{}) (string, error)
-	typeHandlers map[handlerName]destTarget
+	typeHandlers map[string]destTarget
 )
 
 type Root interface {
@@ -18,12 +16,12 @@ type Root interface {
 	GetPath() (string, error)
 }
 type root struct {
-	name         rootName
+	name         string
 	typeHandlers typeHandlers
 	mainGroup    *group
 }
 
-func New(name rootName) *root {
+func New(name string) *root {
 	newRoot := &root{
 		name:         name,
 		typeHandlers: typeHandlers{},
@@ -31,7 +29,7 @@ func New(name rootName) *root {
 
 	newRoot.mainGroup = &group{
 		root:     newRoot,
-		name:     handlerName(name),
+		name:     name,
 		handlers: []handlerFunc{},
 	}
 
@@ -39,7 +37,7 @@ func New(name rootName) *root {
 }
 
 func (r root) GetPath(targetName string, values interface{}) (string, error) {
-	if handlers, ok := r.typeHandlers[handlerName(targetName)]; ok {
+	if handlers, ok := r.typeHandlers[targetName]; ok {
 		pathChan, eChan := traverseHandlers(handlers, values)
 		defer close(pathChan)
 		defer close(eChan)
@@ -110,7 +108,7 @@ func (r root) Name() string {
 	return string(r.name)
 }
 
-func (r *root) AddDestGroup(name handlerName, destHandlerChain ...handlerFunc) *group {
+func (r *root) AddDestGroup(name string, destHandlerChain ...handlerFunc) *group {
 	return &group{
 		name:        name,
 		parentGroup: r.mainGroup,
@@ -119,7 +117,7 @@ func (r *root) AddDestGroup(name handlerName, destHandlerChain ...handlerFunc) *
 	}
 }
 
-func (r *root) AddDest(name handlerName, destHandlerChain ...handlerFunc) {
+func (r *root) AddDest(name string, destHandlerChain ...handlerFunc) {
 	r.typeHandlers[name] = &target{
 		name:        name,
 		parentGroup: r.mainGroup,

@@ -3,18 +3,18 @@ package pathin
 type destGroup interface {
 	destTarget
 	Root() *root
-	AddDestGroup(handlerName, ...handlerFunc) *group
-	AddDest(handlerName, ...handlerFunc)
+	AddDestGroup(string, ...handlerFunc) *group
+	AddDest(string, ...handlerFunc)
 }
 
 type group struct {
 	root        *root
-	name        handlerName
+	name        string
 	parentGroup destGroup
 	handlers    []handlerFunc
 }
 
-func (g group) Name() handlerName {
+func (g group) Name() string {
 	return g.name
 }
 
@@ -26,7 +26,7 @@ func (g group) Handlers() []handlerFunc {
 	return g.handlers
 }
 
-func (g *group) AddDestGroup(name handlerName, handlersChain ...handlerFunc) *group {
+func (g *group) AddDestGroup(name string, handlersChain ...handlerFunc) *group {
 	return &group{
 		name:        name,
 		root:        g.root,
@@ -38,7 +38,7 @@ func (g *group) AddDestGroup(name handlerName, handlersChain ...handlerFunc) *gr
 func (g group) Root() *root {
 	return g.root
 }
-func (g *group) AddDest(name handlerName, handlersChain ...handlerFunc) {
+func (g *group) AddDest(name string, handlersChain ...handlerFunc) {
 	if g.root == nil {
 		panic("Whoops")
 	}
