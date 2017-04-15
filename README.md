@@ -1,7 +1,7 @@
 PATHIN
 ======
 
-[![Build Status](https://travis-ci.org/nxtvibe/pathin.svg)](https://travis-ci.org/nxtvibe/pathin) [![Coverage Status](https://coveralls.io/repos/github/nxtvibe/pathin/badge.svg?branch=master)](https://coveralls.io/github/nxtvibe/pathin?branch=master) [![GoDoc](https://godoc.org/github.com/nxtvibe/pathin?status.svg)](https://godoc.org/github.com/nxtvibe/pathin)
+[![Build Status](https://travis-ci.org/nxtvibe/pathin.svg)](https://travis-ci.org/nxtvibe/pathin) [![Go Report Card](https://goreportcard.com/badge/github.com/nxtvibe/pathin)](https://goreportcard.com/report/github.com/nxtvibe/pathin) [![Coverage Status](https://coveralls.io/repos/github/nxtvibe/pathin/badge.svg?branch=master)](https://coveralls.io/github/nxtvibe/pathin?branch=master) [![GoDoc](https://godoc.org/github.com/nxtvibe/pathin?status.svg)](https://godoc.org/github.com/nxtvibe/pathin)
 
 Pathin is a path generator using predefined handlers that I wrote
 as part of my abstract cloud storage package to store my files to the right location.
