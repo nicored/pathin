@@ -18,10 +18,10 @@ func TestNewFS(t *testing.T) {
 	assert.Equal(t, myFs.Name(), "bucket-name")
 
 	inBucketDest := myFs.AddDestGroup("companyBucket", groupHandler)
-	inBucketDest.AddDest("cad-files", rawHandler)
+	inBucketDest.AddDest("cad-files", RawHandler)
 
 	inUserDest := inBucketDest.AddDestGroup("userBucket", userHandler)
-	inUserDest.AddDest("profile-pictures", rawHandler)
+	inUserDest.AddDest("profile-pictures", RawHandler)
 
 	path, err := myFs.GetPath("profile-pictures", &bucketInfo{bucketId: 974, userId: 941})
 	assert.NoError(t, err)
