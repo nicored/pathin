@@ -8,9 +8,9 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-type chanResp struct {
-	path chan string
-	err  chan error
+type bucketInfo struct {
+	bucketId int
+	userId   int
 }
 
 func TestNewFS(t *testing.T) {
@@ -21,7 +21,12 @@ func TestNewFS(t *testing.T) {
 	inBucketDest.AddDest("cad-files", rawHandler)
 
 	inUserDest := inBucketDest.AddDestGroup("userBucket", userHandler)
-	inUserDest.AddDest("profile-picture", rawHandler)
+	inUserDest.AddDest("profile-pictures", rawHandler)
+
+	path, err := myFs.GetPath("profile-pictures", &bucketInfo{bucketId: 974, userId: 941})
+	assert.NoError(t, err)
+
+	assert.Equal(t, "/buckets/bucket_974/users/941/profile-pictures", path)
 }
 
 func groupHandler(typeName string, values interface{}) (string, error) {
@@ -31,7 +36,7 @@ func groupHandler(typeName string, values interface{}) (string, error) {
 	}
 
 	if info.bucketId > 0 {
-		return "buckets/bucket_" + strconv.Itoa(info.bucketId), nil
+		return "/buckets/bucket_" + strconv.Itoa(info.bucketId), nil
 	}
 
 	return "", errors.New("No bucket Id defined")
@@ -44,7 +49,7 @@ func userHandler(typeName string, values interface{}) (string, error) {
 	}
 
 	if info.userId > 0 {
-		return "users/" + string(typeName) + strconv.Itoa(info.userId), nil
+		return "users/" + strconv.Itoa(info.userId), nil
 	}
 
 	return "", errors.New("No user Id defined")
