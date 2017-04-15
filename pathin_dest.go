@@ -8,7 +8,7 @@ type destTarget interface {
 
 type target struct {
 	name        handlerName
-	parentGroup *Group
+	parentGroup *group
 	handlers    []handlerFunc
 }
 
