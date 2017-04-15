@@ -9,7 +9,7 @@ import (
 type (
 	rootName     string
 	handlerName  string
-	handlerFunc  func(handlerName, interface{}) (string, error)
+	handlerFunc  func(handlerName string, values interface{}) (string, error)
 	typeHandlers map[handlerName]destTarget
 )
 
@@ -35,7 +35,7 @@ func New(name rootName) *Root {
 }
 
 func (r Root) GetPath(targetName string, values interface{}) (string, error) {
-	if handlers, ok := r.typeHandlers[targetName]; ok {
+	if handlers, ok := r.typeHandlers[handlerName(targetName)]; ok {
 		pathChan, eChan := traverseHandlers(handlers, values)
 		defer close(pathChan)
 		defer close(eChan)
@@ -91,7 +91,7 @@ func runHandlers(dest destTarget, values interface{}) (string, error) {
 	path := ""
 	for i := 0; i < len(handlers); i++ {
 
-		output, err := handlers[i](dest.Name(), values)
+		output, err := handlers[i](string(dest.Name()), values)
 		if err != nil {
 			return "", err
 		}
