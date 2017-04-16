@@ -1,7 +1,6 @@
 package pathin
 
 import (
-	"errors"
 	"fmt"
 	"path/filepath"
 )
@@ -44,53 +43,35 @@ func New(name string) *Root {
 
 func (r Root) GetPath(targetName string, values interface{}) (string, error) {
 	if handlers, ok := r.typeHandlers[targetName]; ok {
-		pathChan, eChan := traverseHandlers(handlers, values)
-		defer close(pathChan)
-		defer close(eChan)
-
-		select {
-		case path := <-pathChan:
-			return path, nil
-		case err := <-eChan:
-			return "", err
+		path, err := traverseHandlers(handlers, values)
+		if err != nil {
+			return "", fmt.Errorf("Error getting path: %s", err)
 		}
+
+		return path, nil
 	}
 
-	return "", errors.New(fmt.Sprintf("target %s not found", targetName))
+	return "", fmt.Errorf("target %s not found", targetName)
 }
 
-func traverseHandlers(dest destTarget, values interface{}) (chan string, chan error) {
-	p1 := make(chan string)
-	e1 := make(chan error)
+func traverseHandlers(dest destTarget, values interface{}) (string, error) {
+	var path2 string
+	var err2 error
 
-	go func() {
-		p2 := make(chan string)
-		e2 := make(chan error)
-		defer close(p2)
-		defer close(e2)
+	if dest.ParentGroup() != nil {
+		path2, err2 = traverseHandlers(dest.ParentGroup(), values)
+	} else {
+		path2 = ""
+	}
 
-		path, err := runHandlers(dest, values)
-		if err != nil {
-			e1 <- err
-			return
-		}
+	if err2 != nil {
+		return "", fmt.Errorf("Error traversing handlers: %s", err2)
+	}
 
-		if dest.ParentGroup() != nil {
-			p2, e2 = traverseHandlers(dest.ParentGroup(), values)
-		} else {
-			go func() { p2 <- path }()
-		}
+	path, err := runHandlers(dest, values)
+	path = filepath.Join(path2, path)
 
-		select {
-		case data := <-p2:
-			path = filepath.Join(string(data), path)
-			p1 <- path
-		case err := <-e2:
-			e1 <- err
-		}
-	}()
-
-	return p1, e1
+	return path, err
 }
 
 func runHandlers(dest destTarget, values interface{}) (string, error) {
